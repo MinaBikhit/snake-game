@@ -53,7 +53,7 @@ class Snake:
     def add_segment(self, x, y):
         """method that is used to add a segment to the snake"""
         segment = Turtle()
-        segment.color("white")
+        segment.color("orangered")
         segment.shape("square")
         segment.penup()
         segment.setposition(x, y)
@@ -68,7 +68,7 @@ class Snake:
         global MOVE_DISTANCE
         screen1 = Screen()
         speed = screen1.textinput(title="Choose Difficulty",
-                                 prompt="Choose Difficulty: \n1:Easy \n2:Normal \n3:Hard  ")
+                                 prompt="Choose Difficulty: \n1-Easy \n2-Normal \n3-Hard  \n\nR-Reset\nEscape-Exit")
 
         try:
             if speed == "1":
