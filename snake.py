@@ -4,15 +4,14 @@ from turtle import Turtle, Screen
 MOVE_DISTANCE = 20  # constant that determines the step distance of the snake
 
 
-class Snake():
+class Snake:
 
     def __init__(self):
         self.segments = []              # list that contains all the segments of the snake
-        self.choose_speed()             # calling the function that allows the user to choose the desired speed
+        self.speed = 0.1                # defining the initial speed later to be chosen by the user
+        self.choose_difficulty()             # calling the function that allows the user to choose the desired speed
         self.initial_snake()            # calling the function that creates the initial snake
         self.head = self.segments[0]    # defining the head as the first index in the segments list
-        self.speed = 0                  # defining the initial speed later to be chosen by the user
-
 
     def initial_snake(self):
         """method that creates the initial snake"""
@@ -58,21 +57,55 @@ class Snake():
         segment.shape("square")
         segment.penup()
         segment.setposition(x, y)
-        segment.speed(self.speed)
         self.segments.append(segment)
 
     def extend(self):
         """method used to increase the size of the snake when it eats food"""
         self.add_segment(self.segments[-1].xcor(), self.segments[-1].ycor())
 
-    def choose_speed(self):
+    def choose_difficulty(self):
         """method aimed to allow the user to choose the speed of the snake"""
+        global MOVE_DISTANCE
         screen1 = Screen()
-        speed = screen1.textinput(title="Choose the speed of your snake",
-                                 prompt="Enter the desired speed? \n1:Slow \n2:Fast \n3:Fastest  ")
-        if int(speed) == 1:
-            self.speed = 6
-        elif int(speed) == 2:
-            self.speed = 10
-        elif int(speed) == 3:
-            self.speed = 0
+        speed = screen1.textinput(title="Choose Difficulty",
+                                 prompt="Choose Difficulty: \n1:Easy \n2:Normal \n3:Hard  ")
+
+        try:
+            if speed == "1":
+                MOVE_DISTANCE = 10
+                self.speed = 0.1
+            elif speed == "2":
+                MOVE_DISTANCE = 20
+                self.speed = 0.1
+            elif speed == "3":
+                MOVE_DISTANCE = 20
+                self.speed = 0.05
+            else:
+                MOVE_DISTANCE = 20
+                self.speed = 0.1
+        except TypeError:
+            MOVE_DISTANCE = 20
+            self.speed = 0.1
+
+    def pass_through_wall(self):
+        """Method to let the snake pass through walls"""
+        if self.head.xcor() > 300:
+            self.head.goto(-300, self.head.ycor())
+        elif self.head.xcor() < -300:
+            self.head.goto(300, self.head.ycor())
+        elif self.head.ycor() > 300:
+            self.head.goto(self.head.xcor(), -300)
+        elif self.head.ycor() < -300:
+            self.head.goto(self.head.xcor(), 300)
+
+    def reset(self):
+        """Reset the snake to its initial state."""
+        # Clear existing segments
+        for segment in self.segments:
+            segment.goto(1000, 1000)  # Move segment out of the screen
+            segment.clear()           # Clear the segment
+        self.segments.clear()         # Clear the segments list
+
+        # Recreate the initial snake
+        self.initial_snake()
+        self.head = self.segments[0]  # Update the head reference
